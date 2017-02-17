@@ -2,6 +2,7 @@
 {
     using NLog;
     using System;
+    using System.IO;
     using System.Threading;
 
     internal class Program
@@ -71,10 +72,12 @@
                     logger.Info("");
                     Thread.Sleep(500);
                 }
-                Thread.Sleep(1000);
             }
 
-            logger.Info($"수집 완료!");
+            logger.Info($"[정보 수집 완료]");
+            Thread.Sleep(3000);
+            File.Delete("\\\\NAS_for_younsol\\web\\index.html");
+            File.Move("index.html", "\\\\NAS_for_younsol\\web\\index.html");
         }
     }
 }
