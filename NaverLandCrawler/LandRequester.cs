@@ -9,7 +9,7 @@
 
     public class LandRequester
     {
-        private Logger logger = LogManager.GetCurrentClassLogger();
+        private Logger logger = LogManager.GetLogger("DefaultLogger");
         private string landRequestUri = "http://land.naver.com/isale/isaleComplexList.nhn?page=";
 
         public async Task<int> GetTotalPages()

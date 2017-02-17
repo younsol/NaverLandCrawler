@@ -7,7 +7,8 @@
 
     internal class Program
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger deployLogger = LogManager.GetLogger("DeployLogger");
+        private static Logger logger = LogManager.GetLogger("DefaultLogger");
         private static bool removeNotSeoul = false;
         private static bool removeNotGG = false;
         private static bool removeNotNearByRegion = true;
@@ -17,6 +18,13 @@
 
         internal static void Main(string[] args)
         {
+            deployLogger.Info($"<html>");
+            deployLogger.Info($"<head>");
+            deployLogger.Info($"<meta charset=\"UTF-8\">");
+            deployLogger.Info($"<title>서울 경기 신규 아파트 분양 정보</title>");
+            deployLogger.Info($"</head>");
+            deployLogger.Info($"<body>");
+
             var targetDate = DateTime.Now.ToShortDateString().Replace("-", "");
             logger.Info($"[기준일시<{targetDate}> 정보수집 시작]");
             logger.Info("");
@@ -75,6 +83,10 @@
             }
 
             logger.Info($"[정보 수집 완료]");
+
+            deployLogger.Info($"</body>");
+            deployLogger.Info($"</html>");
+
             Thread.Sleep(3000);
             File.Delete("\\\\NAS_for_younsol\\web\\index.html");
             File.Move("C:\\Users\\youns\\Desktop\\NaverLandCrawler\\index.html", "\\\\NAS_for_younsol\\web\\index.html");
