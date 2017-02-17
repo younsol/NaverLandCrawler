@@ -50,10 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="NLog.Config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">
-      <Version>4.4.1</Version>
+      <Version>4.4.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

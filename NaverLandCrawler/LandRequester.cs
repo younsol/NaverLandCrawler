@@ -14,12 +14,12 @@
 
         public async Task<int> GetTotalPages()
         {
-            return (await GetLandInfo(0)).Result.PagerInfo.TotalPages;
+            return (await GetLandInfo(0)).PagerInfo.TotalPages;
         }
 
-        public async Task<LandRequestResponse> GetLandInfo(int page)
+        public async Task<LandRequestResult> GetLandInfo(int page)
         {
-            logger.Info("Request Start");
+            logger.Trace("Request Start");
             try
             {
                 var request = WebRequest.Create($"{landRequestUri}{page}") as HttpWebRequest;
@@ -29,15 +29,16 @@
                 var stream = response.GetResponseStream();
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(LandRequestResponse));
                 var obj = jsonSerializer.ReadObject(stream);
-                return obj as LandRequestResponse;
+                return (obj as LandRequestResponse).Result;
             }
             catch (Exception e)
             {
+                logger.Error($"Request page[{page}] Incomplete");
                 logger.Error(e.StackTrace);
             }
             finally
             {
-                logger.Info("Request Complete");
+                logger.Trace("Request Complete");
             }
             return null;
         }
