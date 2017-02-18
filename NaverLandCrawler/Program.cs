@@ -2,6 +2,7 @@
 {
     using NLog;
     using System;
+    using System.Configuration;
     using System.IO;
     using System.Threading;
 
@@ -9,15 +10,16 @@
     {
         private static Logger deployLogger = LogManager.GetLogger("DeployLogger");
         private static Logger logger = LogManager.GetLogger("DefaultLogger");
-        private static bool removeNotSeoul = false;
-        private static bool removeNotGG = false;
-        private static bool removeNotNearByRegion = true;
-        private static bool removeFirstRegistPassed = true;
-        private static bool removeFirstRegistDateNotSpecified = true;
+        private static bool removeNotSeoul = bool.Parse(ConfigurationManager.AppSettings["RemoveNotSeoul"]);
+        private static bool removeNotGG = bool.Parse(ConfigurationManager.AppSettings["RemoveNotGG"]);
+        private static bool removeNotNearByRegion = bool.Parse(ConfigurationManager.AppSettings["RemoveNotNearByRegion"]);
+        private static bool removeRegistPassed = bool.Parse(ConfigurationManager.AppSettings["RemoveRegistPassed"]);
+        private static bool removeRegistDateNotSpecified = bool.Parse(ConfigurationManager.AppSettings["RemoveRegistDateNotSpecified"]);
 
 
         internal static void Main(string[] args)
         {
+            
             deployLogger.Info($"<html>");
             deployLogger.Info($"<head>");
             deployLogger.Info($"<meta charset=\"UTF-8\">");
@@ -28,12 +30,32 @@
             var targetDate = DateTime.Now.ToShortDateString().Replace("-", "");
             logger.Info($"[기준일시<{targetDate}> 정보수집 시작]");
             logger.Info("");
-            logger.Info($"========================검색 옵션===========================");
-            logger.Info($"[서울만?: {removeNotSeoul}]");
-            logger.Info($"[경기만?: {removeNotGG}]");
-            logger.Info($"[서울 또는 경기만?: {removeNotNearByRegion}]");
-            logger.Info($"[1차 접수 기간이 지나지 않은것들만?: {removeFirstRegistPassed}]");
-            logger.Info($"[1차 접수 기간이 공고 난 것들만?: {removeFirstRegistDateNotSpecified}]");
+            logger.Info($"=========================검색 옵션============================");
+            if (removeNotSeoul)
+            {
+                logger.Info("[서울만]");
+            }
+
+            if (removeNotGG)
+            {
+                logger.Info("[경기만]");
+            }
+
+            if (removeNotNearByRegion)
+            {
+                logger.Info("[서울 또는 경기만]");
+            }
+
+            if (removeRegistPassed)
+            {
+                logger.Info("[접수 기간이 지나지 않은것들만]");
+            }
+
+            if (removeRegistDateNotSpecified)
+            {
+                logger.Info("[접수 기간이 공고 난 것들만]");
+            }
+
             logger.Info($"============================================================");
             logger.Info("");
 
@@ -60,11 +82,11 @@
                     bool notNearByRegion = notSeoul && notGG;
                     bool firstRegistPassed = !string.IsNullOrEmpty(complex.Ss3) && string.Compare(complex.Sx3, targetDate) < 0;
 
-                    if ( (removeFirstRegistDateNotSpecified && firstRegistDateNotSpecified)
+                    if ( (removeRegistDateNotSpecified && firstRegistDateNotSpecified)
                         || (removeNotSeoul && notSeoul)
                         || (removeNotGG && notGG)
                         || (removeNotNearByRegion && notNearByRegion)
-                        || (removeFirstRegistPassed && firstRegistPassed))
+                        || (removeRegistPassed && firstRegistPassed))
                     {
                         continue;
                     }
